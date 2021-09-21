@@ -1,6 +1,8 @@
 package br.com.biopark.sistemacadastro.controller;
 
 import br.com.biopark.sistemacadastro.dto.Cliente;
+import br.com.biopark.sistemacadastro.dto.EnumStatus;
+import br.com.biopark.sistemacadastro.dto.Pedido;
 import br.com.biopark.sistemacadastro.repository.ClienteDTORepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
@@ -19,6 +21,10 @@ public class ClienteController {
 
     @GetMapping("/todos")
     public ResponseEntity<List<Cliente>> listar() {
+
+        Pedido pedido = new Pedido();
+        pedido.setStatusPedido(EnumStatus.NOVO);
+
         return new ResponseEntity<>(repository.findAll(),
                 HttpStatus.OK);
     }
