@@ -1,0 +1,56 @@
+******** PASSO 1 ********************************
+
+Primeiro, precisamos adicionar as dependências para Spring Security e JWT:
+
+No arquivo pom.xml do seu projeto adicione as dependências:
+
+<dependency>
+	<groupId>org.springframework.boot</groupId>
+	<artifactId>spring-boot-starter-security</artifactId>
+</dependency>
+<dependency>
+    <groupId>io.jsonwebtoken</groupId>
+    <artifactId>jjwt</artifactId>
+    <version>0.9.1</version>
+</dependency>
+
+******** PASSO 2 ********************************
+
+Crie o DTO de Usuário, com um atributo Token como em https://github.com/paulo-manualdaprogramacao/sistemadecadastro/blob/main/src/main/java/br/com/biopark/sistemacadastro/dto/Usuario.java
+
+******** PASSO 3 ********************************
+
+Crie o arquivo LoginController.java: https://github.com/paulo-manualdaprogramacao/sistemadecadastro/blob/main/src/main/java/br/com/biopark/sistemacadastro/controller/LoginController.java 
+
+******** PASSO 3 ********************************
+
+Na classe Application.java do seu projeto, adicione o seguinte método:
+
+	@EnableWebSecurity
+	@Configuration
+	class WebSecurityConfig extends WebSecurityConfigurerAdapter {
+
+		@Override
+		protected void configure(HttpSecurity http) throws Exception {
+			http.csrf().disable()
+				.addFilterAfter(new JWTAuthorizationFilter(), UsernamePasswordAuthenticationFilter.class)
+				.authorizeRequests()
+				.antMatchers(HttpMethod.POST, "/login").permitAll()
+				.anyRequest().authenticated();
+		}
+	}
+	
+Assim como foi feito em https://github.com/paulo-manualdaprogramacao/sistemadecadastro/blob/main/src/main/java/br/com/biopark/sistemacadastro/SistemacadastroApplication.java	
+	
+	
+******** PASSO 4 ********************************
+	
+Crie o arquivo JWTAuthorizationFilter.java: https://github.com/paulo-manualdaprogramacao/sistemadecadastro/blob/main/src/main/java/br/com/biopark/sistemacadastro/JWTAuthorizationFilter.java
+
+******** OBSERVAÇÕES ****************************
+
+ALTERE A CHAVE SECRETA PARA UMA SUA PARTICULAR. No exemplo está "chaveSecreta". Precisa alterar tanto na classe JWTAuthorizationFilter como em LoginController.
+
+******** TESTANDO *******************************
+
+Faça uma requisição POST para http://localhost:8080/login passando o user e password como parametros. Este método retornará um token. Para requisitar os outros endpoints, passe o token obtido como Authorization no cabeçalho da requisição.
